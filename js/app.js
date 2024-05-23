@@ -27,7 +27,7 @@ function setInformation() {
         tdv.innerHTML = `
         <h2>${element['#TITLE']}</h2>
         <img src="${element['#IMG_POSTER']}" alt="" width = "100px">
-        <p>Rank: ${element['#RANK']} </p>
+        <p><b>Rank:</b> ${element['#RANK']} </p>
         <p class="actors"><b>Actores:</b> ${element['#ACTORS']} </p>
         <p><b>${element['#YEAR']} </b></p>
         `;
@@ -146,4 +146,92 @@ function filterRank() {
             }
         });
     });
+}
+
+
+
+// Consulta los títulos de todas las películas.
+export const consultarTitulos = async () => {
+    try {
+        let res = await fetch("https://search.imdbot.workers.dev/?q=Niram");
+        let data = await res.json();
+        let titulos = data.description.map(pelicula => pelicula["#TITLE"]);
+        return titulos;
+    } catch (error) {
+        console.error('Error al obtener datos de la API:', error);
+        return [];
+    }
+}
+
+// Consulta los títulos y años de lanzamiento originales de todos los contenidos (películas y programas de TV).
+export const consultarTitulosYAnios = async () => {
+    try {
+        let res = await fetch("https://search.imdbot.workers.dev/?q=Niram");
+        let data = await res.json();
+        let info = data.description.map(item => {
+            return {
+                title: item["#TITLE"],
+                year: item["#YEAR"]
+            };
+        });
+        return info;
+    } catch (error) {
+        console.error('Error al obtener datos de la API:', error);
+        return [];
+    }
+}
+
+// Consulta los identificadores y títulos de todas las películas.
+export const consultarIdentificadoresYTitulos = async () => {
+    try {
+        let res = await fetch("https://search.imdbot.workers.dev/?q=Niram");
+        let data = await res.json();
+        let info = data.description.map(item => {
+            return {
+                id: item["#IMDB_ID"],
+                title: item["#TITLE"]
+            };
+        });
+        return info;
+    } catch (error) {
+        console.error('Error al obtener datos de la API:', error);
+        return [];
+    }
+}
+
+// Consulta las URL completas y los tipos de objetos (películas y programas de TV).
+export const consultarURLsYTipos = async () => {
+    try {
+        let res = await fetch("https://search.imdbot.workers.dev/?q=Niram");
+        let data = await res.json();
+        let info = data.description.map(item => {
+            return {
+                url: item["#IMDB_URL"],
+                type: item.hasOwnProperty("#YEAR") ? "Movie" : "TV Show"
+            };
+        });
+        return info;
+    } catch (error) {
+        console.error('Error al obtener datos de la API:', error);
+        return [];
+    }
+}
+
+// Consulta los títulos, años de lanzamiento originales y tipos de objetos, pero solo para películas.
+export const consultarInfoPeliculas = async () => {
+    try {
+        let res = await fetch("https://search.imdbot.workers.dev/?q=Niram");
+        let data = await res.json();
+        let infoPeliculas = data.description.filter(item => item.hasOwnProperty("#YEAR")).map(item => {
+            return {
+                title: item["#TITLE"],
+                year: item["#YEAR"],
+                type: "Movie"
+            };
+        });
+        return infoPeliculas;
+    } catch (error) {
+        console.error('Error al obtener datos de la API:', error);
+        return [];
+    }
 }
